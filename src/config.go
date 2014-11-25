@@ -20,6 +20,7 @@ type config struct {
 type globalConfig struct {
 	Port     int
 	Datafile string
+	Statfile string
 	Vmdir    string
 }
 
@@ -36,6 +37,7 @@ type bhyveConfig struct {
 	Bhyvectl  string
 	Bhyveload string
 	Bhyvegrub string
+	Mkimg     string
 }
 
 // init global config

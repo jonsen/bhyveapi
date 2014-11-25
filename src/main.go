@@ -40,6 +40,8 @@ func main() {
 		r.Get("/:id", vmStatus) // get status by vm name
 	})
 
+	m.Get("/console/:id", webConsole)
+
 	port := fmt.Sprintf(":%d", gcfg.Global.Port)
 	http.ListenAndServe(port, m)
 }

@@ -10,17 +10,18 @@ import (
 )
 
 func vmControlStart(r render.Render, p martini.Params) {
-	var msg string
+	var msg string = "start success"
 
 	vm := p["id"]
-	bv, ok := bhyves[vm]
-	if ok {
-		err := bv.Start()
+
+	bv, err := GetBhyve(vm)
+	if err == nil {
+		err = bv.Start()
 		if err != nil {
 			msg = err.Error()
 		}
 	} else {
-		msg = "vm not exists"
+		msg = err.Error()
 	}
 
 	ret := &Message{Message: msg, Code: 200, Url: ""}
@@ -28,18 +29,18 @@ func vmControlStart(r render.Render, p martini.Params) {
 }
 
 func vmControlReboot(r render.Render, p martini.Params) {
-	var msg string
+	var msg string = "reboot success"
 
 	vm := p["id"]
-	bv, ok := bhyves[vm]
-	if ok {
-		err := bv.Stop()
+	bv, err := GetBhyve(vm)
+	if err == nil {
+		err = bv.Halt()
 		err = bv.Start()
 		if err != nil {
 			msg = err.Error()
 		}
 	} else {
-		msg = "vm not exists"
+		msg = err.Error()
 	}
 
 	ret := &Message{Message: msg, Code: 200, Url: ""}
@@ -47,19 +48,18 @@ func vmControlReboot(r render.Render, p martini.Params) {
 }
 
 func vmControlHalt(r render.Render, p martini.Params) {
-	var msg string
+	var msg string = "halt success"
 
 	vm := p["id"]
-	bv, ok := bhyves[vm]
-	if ok {
-		err := bv.Halt()
+	bv, err := GetBhyve(vm)
+	if err == nil {
+		err = bv.Halt()
 		if err != nil {
 			msg = err.Error()
 		}
 	} else {
-		msg = "vm not exists"
+		msg = err.Error()
 	}
-
 	ret := &Message{Message: msg, Code: 200, Url: ""}
 	r.JSON(200, ret)
 }

@@ -79,19 +79,18 @@ func vmManagerUpdate(req *http.Request, r render.Render, p martini.Params) {
 }
 
 func vmManagerDestroy(r render.Render, p martini.Params) {
-	var msg string
+	var msg string = "destroy success"
 
 	vm := p["id"]
-	bv, ok := bhyves[vm]
-	if ok {
-		err := bv.Destroy()
+	bv, err := GetBhyve(vm)
+	if err == nil {
+		err = bv.Destroy()
 		if err != nil {
 			msg = err.Error()
 		}
 	} else {
-		msg = "vm not exists"
+		msg = err.Error()
 	}
-
 	ret := &Message{Message: msg, Code: 200, Url: ""}
 	r.JSON(200, ret)
 
@@ -99,17 +98,38 @@ func vmManagerDestroy(r render.Render, p martini.Params) {
 
 func vmManagerList(r render.Render) {
 
+	r.JSON(200, bhyves)
 }
 
 func vmManagerInfo(r render.Render, p martini.Params) {
 	vm := p["id"]
-	bv, ok := bhyves[vm]
-	if ok {
+	bv, err := GetBhyve(vm)
+	if err == nil {
 		r.JSON(200, bv)
 		return
 	}
 
-	ret := &Message{Message: "vm not exists", Code: 200, Url: ""}
+	msg := err.Error()
+	ret := &Message{Message: msg, Code: 200, Url: ""}
+	r.JSON(200, ret)
+
+}
+
+func vmManagerInstall(r render.Render, p martini.Params) {
+	var msg string = "install success"
+
+	vm := p["id"]
+	bv, err := GetBhyve(vm)
+	if err == nil {
+		err = bv.Install()
+		if err != nil {
+			msg = err.Error()
+		}
+	} else {
+		msg = err.Error()
+	}
+
+	ret := &Message{Message: msg, Code: 200, Url: ""}
 	r.JSON(200, ret)
 
 }
